@@ -1,29 +1,19 @@
 from datetime import datetime
 
+def print_console_report(data):
 
-def generate_report(data):
-
-    print("\n-----------------------------------")
-    print("Developer Productivity Report")
+    print("\nDeveloper Productivity Report")
     print("-----------------------------------")
 
-    print(f"Report Time      : {datetime.now()}")
+    print(f"Report Generated : {datetime.now()}")
     print(f"Total Commits    : {data['commits']}")
-    print(f"Files Modified   : {data['files_changed']}")
     print(f"Lines Added      : {data['lines_added']}")
     print(f"Lines Removed    : {data['lines_removed']}")
 
     net = data["lines_added"] - data["lines_removed"]
 
     print(f"Net Code Change  : {net}")
-
-    if net > 500:
-        productivity = "High"
-    elif net > 100:
-        productivity = "Moderate"
-    else:
-        productivity = "Low"
-
-    print(f"Productivity Level : {productivity}")
+    print(f"Estimated Coding Hours : {data['hours']}")
+    print(f"Activity Level   : {data['activity_level']}")
 
     print("-----------------------------------\n")
