@@ -1,26 +1,38 @@
 from git_analyzer import GitAnalyzer
-from report_generator import generate_report
+from activity_estimator import estimate_coding_hours
+from report_generator import print_console_report
+from dashboard_generator import generate_commit_graph, generate_html_dashboard
+
 
 def main():
-    print("\nDeveloper Productivity Tracker")
-    print("-----------------------------------")
 
-    repo_path = input("Enter path to your git repository: ").strip()
+    print("\nDeveloper Productivity Tracker V2")
+    print("------------------------------------")
 
-    analyzer = GitAnalyzer(repo_path)
+    repo = input("Enter Git Repository Path: ").strip()
+
+    analyzer = GitAnalyzer(repo)
 
     commits = analyzer.get_commit_count()
-    lines_added, lines_removed = analyzer.get_line_stats()
-    files_changed = analyzer.get_files_changed()
+    added, removed = analyzer.get_line_stats()
+    activity = analyzer.get_commit_activity()
 
-    report = {
+    hours, level = estimate_coding_hours(commits)
+
+    data = {
         "commits": commits,
-        "lines_added": lines_added,
-        "lines_removed": lines_removed,
-        "files_changed": files_changed
+        "lines_added": added,
+        "lines_removed": removed,
+        "hours": hours,
+        "activity_level": level
     }
 
-    generate_report(report)
+    print_console_report(data)
+
+    generate_commit_graph(activity)
+    generate_html_dashboard(data)
+
+    print("Dashboard generated → dashboard.html")
 
 
 if __name__ == "__main__":
