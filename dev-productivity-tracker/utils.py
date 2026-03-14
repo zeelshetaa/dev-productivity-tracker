@@ -1,9 +1,6 @@
-#(git command helper)
 import subprocess
 
-
 def run_git_command(command, repo_path):
-
     result = subprocess.run(
         command,
         cwd=repo_path,
