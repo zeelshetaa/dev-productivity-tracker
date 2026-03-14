@@ -1,7 +1,5 @@
-#this is core logic file for git analyzer
-import subprocess
 from utils import run_git_command
-
+from collections import defaultdict
 
 class GitAnalyzer:
 
@@ -29,14 +27,14 @@ class GitAnalyzer:
 
         return added, removed
 
-    def get_files_changed(self):
-        command = ["git", "log", "--name-only", "--pretty=format:"]
+    def get_commit_activity(self):
+        command = ["git", "log", "--pretty=format:%ad", "--date=short"]
         output = run_git_command(command, self.repo_path)
 
-        files = set()
+        activity = defaultdict(int)
 
-        for line in output.split("\n"):
-            if line.strip():
-                files.add(line.strip())
+        for date in output.split("\n"):
+            if date.strip():
+                activity[date.strip()] += 1
 
-        return len(files)
+        return dict(activity)
