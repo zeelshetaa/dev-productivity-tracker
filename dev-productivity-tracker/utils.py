@@ -1,15 +1,21 @@
 import subprocess
 
 def run_git_command(command, repo_path):
-    result = subprocess.run(
-        command,
-        cwd=repo_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True
-    )
+    try:
+        result = subprocess.run(
+            command,
+            cwd=str(repo_path),   # ensure string
+            capture_output=True,
+            text=True,
+            shell=True            # 🔥 IMPORTANT FIX
+        )
 
-    if result.returncode != 0:
-        raise Exception(result.stderr)
+        if result.returncode != 0:
+            print("Git Error:", result.stderr)
+            return ""
 
-    return result.stdout
+        return result.stdout.strip()
+
+    except Exception as e:
+        print("Execution Error:", e)
+        return ""
