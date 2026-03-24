@@ -1,38 +1,37 @@
 from git_analyzer import GitAnalyzer
-from activity_estimator import estimate_coding_hours
-from report_generator import print_console_report
-from dashboard_generator import generate_commit_graph, generate_html_dashboard
+from report_generator import generate_report
+from analytics_engine import AnalyticsEngine
+from scoring_engine import ScoringEngine
+from ai_recommender import AIRecommender
 
 
 def main():
 
-    print("\nDeveloper Productivity Tracker V2")
-    print("------------------------------------")
+    repo_path = input("Enter Git Repository Path: ")
 
-    repo = input("Enter Git Repository Path: ").strip()
-
-    analyzer = GitAnalyzer(repo)
+    analyzer = GitAnalyzer(repo_path)
 
     commits = analyzer.get_commit_count()
     added, removed = analyzer.get_line_stats()
-    activity = analyzer.get_commit_activity()
-
-    hours, level = estimate_coding_hours(commits)
+    files_changed = analyzer.get_files_changed()
 
     data = {
         "commits": commits,
         "lines_added": added,
         "lines_removed": removed,
-        "hours": hours,
-        "activity_level": level
+        "files_changed": files_changed   # ✅ FIXED
     }
 
-    print_console_report(data)
+    analytics = AnalyticsEngine(data)
+    insights = analytics.analyze_patterns()
 
-    generate_commit_graph(activity)
-    generate_html_dashboard(data)
+    scoring = ScoringEngine(data)
+    score, level = scoring.calculate_score()
 
-    print("Dashboard generated → dashboard.html")
+    ai = AIRecommender(data)
+    recommendations = ai.generate_recommendations()
+
+    generate_report(data, score, level, insights, recommendations)
 
 
 if __name__ == "__main__":
